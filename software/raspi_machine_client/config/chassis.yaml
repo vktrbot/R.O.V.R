@@ -1,0 +1,33 @@
+chassis_controller_node:
+  ros__parameters:
+    backend: real
+    strict_startup: true
+    dir_pin: 23
+    pwm_pin: 18
+    steer_pin: 24
+    pwm_frequency: 1000
+    servo_frequency_hz: 250
+    steer_pulse_deadband_us: 5
+    steer_idle_detach: true
+    steer_idle_deadband: 0.03
+    steer_idle_pwm_threshold: 0.03
+    use_pigpio: false
+    steer_center_offset: 0.00
+    steer_amount: 0.6
+    steer_left_scale: 1.10
+    steer_right_scale: 0.90
+    accel_rate: 1.4
+    decel_rate: 2.2
+    steer_rate: 3.0
+    heartbeat_timeout_ms: 500
+    servo_min_pulse: 0.0009
+    servo_max_pulse: 0.0021
+    shutdown_center_hold_sec: 0.25
+    control_rate_hz: 50.0
+    stall_kill_sec: 3.0
+    health_report_sec: 2.0
+    warn_cmd_stale_sec: 1.5
+    hw_fail_streak_kill: 25
+    hw_ok_kill_sec: 2.0
+    health_publish_sec: 1.0
+    hw_reinit_sec: 30.0

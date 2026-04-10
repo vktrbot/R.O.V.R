@@ -1,0 +1,52 @@
+{
+  "1": {
+    "name": "Joint 1 (Yaw base)",
+    "min": 1269,
+    "max": 2784,
+    "home": 2066,
+    "center_raw": 917,
+    "center_virtual": 2048
+  },
+  "2": {
+    "name": "Joint 2 (Pitch shoulder)",
+    "min": 840,
+    "max": 3269,
+    "home": 1064,
+    "center_raw": 2717,
+    "center_virtual": 2048
+  },
+  "3": {
+    "name": "Joint 3 (Pitch elbow)",
+    "min": 826,
+    "max": 3033,
+    "home": 3033,
+    "center_raw": 1544,
+    "center_virtual": 2048
+  },
+  "4": {
+    "name": "Joint 4 (Pitch wrist)",
+    "min": 1107,
+    "max": 3129,
+    "home": 1486,
+    "center_raw": 2132,
+    "center_virtual": 2048
+  },
+  "5": {
+    "name": "Joint 5 (Roll wrist)",
+    "min": 896,
+    "max": 2486,
+    "home": 2055,
+    "center_raw": 3438,
+    "center_virtual": 2048
+  },
+  "6": {
+    "name": "joint_6",
+    "min": 2048,
+    "max": 3357,
+    "home": 2048,
+    "center_raw": 868,
+    "center_virtual": 2048,
+    "gripper_open_raw": 868,
+    "gripper_closed_raw": 2177
+  }
+}

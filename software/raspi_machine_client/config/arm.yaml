@@ -1,0 +1,79 @@
+arm_controller_node:
+  ros__parameters:
+    backend: mock
+    serial_port: /dev/serial/by-id/usb-1a86_USB_Single_Serial_5AB0158127-if00
+    fallback_serial_port: /dev/ttyACM0
+    baudrate: 1000000
+    servo_ids: [1, 2, 3, 4, 5, 6]
+    limits_file: config/arm_limits.json
+    ignore_limits: false
+    strict_startup: false
+    verify_bus_ids: true
+    bus_scan_min_id: 1
+    bus_scan_max_id: 8
+
+    # Control loop
+    control_rate_hz: 50.0
+    telemetry_rate_hz: 10.0
+
+    # Trajectory smoothing — EMA low-pass filter
+    # alpha=0.05 is very slow for debugging; increase toward 0.3 for normal operation
+    ema_alpha: 0.05
+    # Maximum encoder steps per 50 Hz tick (velocity clamp, prevents startup jerk)
+    max_step_per_tick: 10
+    # Deadband: stop sending serial commands once within this many ticks of target.
+    # Prevents MOS-FET switching noise and resistive heating on stationary joints.
+    position_deadband: 2
+    # How close (ticks) to home counts as "arrived" before releasing torque
+    home_deadband: 8
+    # Release torque once all joints reach home (reduces heating at rest)
+    home_release_torque: true
+
+    # Network watchdog: if no packets arrive for this long, arm goes home
+    heartbeat_timeout_sec: 1.0
+
+    # Safety: temperature
+    # Servo temperature above this limit triggers SAFE_MODE for the whole arm
+    temp_limit_celsius: 60.0
+
+    # Safety: jam detection
+    # Load threshold for jam detection (0.0-1.0)
+    jam_load_threshold: 0.97
+    # How long (sec) high load + no motion must persist before flagging jam
+    jam_hold_time_sec: 3.0
+    # Minimum commanded target delta (ticks) to consider "motion commanded"
+    jam_target_delta_threshold: 96
+    # Maximum position change between ticks still counted as "no motion"
+    jam_no_motion_epsilon: 2
+
+    # Safety: overload guard (brief motion suppression on hardware overload flag)
+    overload_guard_enabled: true
+    overload_guard_hold_time_sec: 0.35
+    overload_target_delta_threshold: 64
+
+    # Safety: load-based speed derate
+    # When load exceeds load_derate_start the max step is linearly reduced
+    # down to load_min_step at load_derate_end. Protects against overload on heavy lifts.
+    load_derate_start: 0.65
+    load_derate_end: 0.90
+    load_min_step: 6
+
+    # Hardware profile written at servo arm time
+    # compliance_margin: hardware deadband (CW/CCW register), prevents MOSFET micro-switching
+    # on encoder noise. 4 ticks ≈ 0.35 deg. Increase to 6-8 if motors still oscillate.
+    compliance_margin: 4
+    position_speed: 2200
+    position_acceleration: 80
+    position_speed_per_servo: [2000, 1800, 1800, 1300, 1700, 1600]
+    position_acceleration_per_servo: [70, 60, 60, 40, 55, 50]
+    pid_p_per_servo: [34, 40, 42, 48, 44, 30]
+    pid_i_per_servo: [4, 6, 6, 8, 6, 2]
+    pid_d_per_servo: [24, 26, 28, 34, 30, 20]
+    max_torque_limit_per_servo: [1000, 1000, 1000, 1000, 1000, 900]
+    protection_current_per_servo: [900, 930, 940, 940, 920, 750]
+    overload_torque_per_servo: [130, 145, 150, 160, 145, 110]
+    protection_time_per_servo: [20, 25, 25, 30, 25, 20]
+    use_sync_write: true
+    # Diagnostic poll period (loads, temps, voltages).
+    # At 50 Hz control rate, 0.2 s polls diagnostics every ~10 ticks.
+    diag_poll_period_sec: 0.2

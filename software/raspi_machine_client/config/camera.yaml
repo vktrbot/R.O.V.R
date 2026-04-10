@@ -1,0 +1,30 @@
+camera_ptz_node:
+  ros__parameters:
+    backend: mock
+    serial_port: /dev/serial/by-id/usb-1a86_USB_Single_Serial_5A46085410-if00
+    fallback_serial_port: /dev/ttyACM1
+    baudrate: 1000000
+    servo_ids: [1, 2]
+    control_rate_hz: 40.0
+    smoothing_mode: ema
+    ema_alpha: 0.55
+    max_relative_target: 120
+    target_snap_delta: 40
+    position_speed: 3000
+    position_acceleration: 150
+    position_speed_per_servo: [3000, 2600]
+    position_acceleration_per_servo: [150, 130]
+    pid_p_per_servo: [28, 30]
+    pid_i_per_servo: [2, 2]
+    pid_d_per_servo: [30, 34]
+    max_torque_limit_per_servo: [1000, 1000]
+    protection_current_per_servo: [820, 820]
+    overload_torque_per_servo: [120, 120]
+    protection_time_per_servo: [12, 12]
+    use_sync_write: true
+    diag_poll_period_sec: 0.4
+    limits_file: config/camera_limits.json
+    safety_margin_ticks: 80
+    wrap_guard_ticks: 8
+    home_on_startup: true
+    startup_home_timeout_sec: 1.5

@@ -1,0 +1,13 @@
+typing-extensions
+idna
+annotated-types
+annotated-doc
+typing-inspection
+pydantic-core
+anyio
+starlette
+pydantic
+fastapi[standard]
+yaml_configuration
+uvicorn[standard]
+python-benedict

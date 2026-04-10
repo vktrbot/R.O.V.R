@@ -1,0 +1,21 @@
+webrtc_bridge_node:
+  ros__parameters:
+    crc_python_src_path: ""
+    websocket_url: ""
+    device_id: ""
+    device_secret: ""
+    turn_server_url: ""
+    turn_user: ""
+    turn_password: ""
+    data_channel_name: data
+    command_timeout_ms: 500
+    arm_limits_file: config/arm_limits.json
+    camera_limits_file: config/camera_limits.json
+    camera_safety_margin_ticks: 80
+    camera_wrap_guard_ticks: 8
+    gripper_servo_id: 6
+    camera_yaw_deg_min: -140.0
+    camera_yaw_deg_max: 145.0
+    camera_pitch_deg_min: -70.0
+    camera_pitch_deg_max: 27.0
+    mock_incoming_payload: ""

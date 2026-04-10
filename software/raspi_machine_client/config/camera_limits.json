@@ -1,0 +1,18 @@
+{
+  "1": {
+    "name": "pan",
+    "min": 435,
+    "max": 3752,
+    "home": 2040,
+    "center_raw": 1979,
+    "center_virtual": 2048
+  },
+  "2": {
+    "name": "tilt",
+    "min": 1206,
+    "max": 2446,
+    "home": 2034,
+    "center_raw": 3844,
+    "center_virtual": 2048
+  }
+}

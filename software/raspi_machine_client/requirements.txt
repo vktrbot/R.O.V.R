@@ -1,0 +1,8 @@
+aiortc
+websocket-client
+python-benedict
+pyserial
+st3215
+pytest
+pytest-asyncio
+pytest-cov
