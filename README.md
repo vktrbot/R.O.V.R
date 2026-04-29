@@ -30,11 +30,17 @@ https://github.com/user-attachments/assets/33ea84b9-004b-4aba-8b35-16cac6187755
 ## Tech stack
 
 **Robot OS**: Raspberry Pi 5 · Ubuntu · ROS 2 Jazzy
+
 **Robot software**: Python · WebRTC · gpiozero · pyserial
+
 **VR client**: Unity · C# · Unity.WebRTC
+
 **IK**: Custom damped-Jacobian solver on Unity ArticulationBody
+
 **Network**: WebRTC peer-to-peer · WebSocket signaling · TURN
+
 **Signaling server**: FastAPI + uvicorn · HMAC challenge-nonce auth · lobby pairing
+
 **Hardware**: MD10C motor driver · STS3215 servos · 120W DC-motor · TGY-S9010 steering servo
 
 ---
@@ -47,7 +53,7 @@ I owned the robot's software stack — from Pi firmware up to the Unity VR clien
 
 ### Robot side — Raspberry Pi · Python · ROS 2
 
-- **ROS 2 architecture.** Designed the package layout (`rovr_arm`, `rovr_camera`, `rovr_chassis`, `rovr_common`, `rovr_interfaces, `rovr_bringup`) so each subsystem has clean core logic.
+- **ROS 2 architecture.** Designed the package layout (`rovr_arm`, `rovr_camera`, `rovr_chassis`, `rovr_common`, `rovr_interfaces`, `rovr_bringup`) so each subsystem has clean core logic.
 - **Custom ROS messages** (`ArmCommand`, `CameraCommand`, `ArmTelemetry`) including per-joint load / temperature / jam-detected / torque-enabled telemetry to control the servomotors.
 - **WebRTC communications module.** Wrote the client that connects to the signaling server, negotiates the peer connection, registers the data channel + video track, parses incoming JSON command frames (drive / camera / arm), and bridges them into ROS 2 topics.
 - **Low-latency video pipeline.** Configured v4l2 capture with low-delay flags and wrote a wrapper track that drops stale queued frames before sending — meaningfully cuts motion-to-photon latency in the headset.
@@ -76,14 +82,19 @@ The mechanical design (chassis, arm) and the electronics layout were handled by 
 
 **Full stack on the robot:**
 bash scripts/run_full_stack.sh real     # real hardware
+
 bash scripts/run_full_stack.sh mock     # simulated hardware
 
 **Subsystem tests:**
 python3 scripts/test_drive_keyboard.py             # drive with WASD, no VR client needed
+
 python3 scripts/test_arm_positions.py              # cycle the arm through preset poses
+
 python3 scripts/test_camera_positions.py           # exercise pan/tilt
+
 python3 scripts/calibrate_arm.py                   # full arm calibration
-python3 scripts/recalibrate_joint.py --joint <n>   # single-joint recalibration
+
+python3 scripts/recalibrate_joint.py --joint {n}   # single-joint recalibration
 
 ---
 
