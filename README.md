@@ -81,20 +81,21 @@ The mechanical design (chassis, arm) and the electronics layout were handled by 
 ## Running it
 
 **Full stack on the robot:**
-bash scripts/run_full_stack.sh real     # real hardware
 
+```bash
+bash scripts/run_full_stack.sh real     # real hardware
 bash scripts/run_full_stack.sh mock     # simulated hardware
+```
 
 **Subsystem tests:**
+
+```bash
 python3 scripts/test_drive_keyboard.py             # drive with WASD, no VR client needed
-
 python3 scripts/test_arm_positions.py              # cycle the arm through preset poses
-
 python3 scripts/test_camera_positions.py           # exercise pan/tilt
-
 python3 scripts/calibrate_arm.py                   # full arm calibration
-
 python3 scripts/recalibrate_joint.py --joint {n}   # single-joint recalibration
+```
 
 ---
 
