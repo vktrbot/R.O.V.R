@@ -1,6 +1,6 @@
 # R.O.V.R
 
-A four-wheeled mobile robot teleoperated from a Meta Quest 3 VR headset over the internet, with a live first-person video feed and a 6-axis robotic arm controlled via inverse kinematics from the operator's hand movements.
+A four-wheeled mobile robot teleoperated over the internet using a Meta Quest 3 VR headset, with a live first-person video feed and a 5-DOF robotic arm controlled via inverse kinematics from the operator's VR controller movements.
 
 Built as a team project for the Mechatronics Exercises course at Aalto University.
 
@@ -9,11 +9,14 @@ Built as a team project for the Mechatronics Exercises course at Aalto Universit
 
 ## Demo
 
-https://github.com/user-attachments/assets/8a07a5b6-451d-4334-9e74-df3e29b0b973
+### Robotic Arm Demo
+https://github.com/user-attachments/assets/638f44d5-a422-4bfc-b795-b36a408cdfbc
 
-https://github.com/user-attachments/assets/29166c4f-d11a-4eac-a6c9-1b25f7da4b84
+### Camera Pan/Tilt and Driving Demo
+https://github.com/user-attachments/assets/84d23001-c920-4975-bea1-24dbc5f30848
 
-https://github.com/user-attachments/assets/33ea84b9-004b-4aba-8b35-16cac6187755
+### Driving Demo - External View and Operator View
+https://github.com/user-attachments/assets/6d4637f3-454d-421b-a35a-25c15557b606
 
 ---
 
@@ -23,7 +26,7 @@ https://github.com/user-attachments/assets/33ea84b9-004b-4aba-8b35-16cac6187755
 - Head tracking drives the camera pan/tilt servos — look around in VR, the camera follows.
 - Controller tracking drives the robotic arm — move the VR controller in 3D space, the arm's IK solver computes joint angles and sends them to the servos.
 - Thumbsticks drive the chassis (DC motor + steering servo).
-- All control + video runs peer-to-peer over WebRTC, so the robot can be operated from anywhere with internet, not just the local network.
+- Control data and video are streamed over WebRTC, so the robot can be operated remotely over the internet, not just on a local network.
 
 ---
 
@@ -41,13 +44,23 @@ https://github.com/user-attachments/assets/33ea84b9-004b-4aba-8b35-16cac6187755
 
 **Signaling server**: FastAPI + uvicorn · HMAC challenge-nonce auth · lobby pairing
 
-**Hardware**: MD10C motor driver · STS3215 servos · 120W DC-motor · TGY-S9010 steering servo
+**Hardware**: MD10C motor driver · ST3215 servos · 120W DC motor · TGY-S9010 steering servo
 
 ---
 
 ## My contributions
 
-I owned the robot's software stack — from Pi firmware up to the Unity VR client and the signaling server.
+I was responsible for the robot software stack — from Raspberry Pi control software to the Unity VR client and the signaling server.
+
+## Architecture
+
+The system is split into three main parts:
+
+- **Robot**: Raspberry Pi 5 running ROS 2 nodes for chassis, arm, camera, and WebRTC communication.
+- **Operator**: Unity application on Meta Quest 3 handling VR input, IK, video display, and command streaming.
+- **Signaling server**: FastAPI WebSocket server used for authentication, lobby pairing, and WebRTC session setup.
+
+After signaling, control data and video are exchanged through WebRTC between the operator and the robot.
 
 <img width="625" height="565" alt="rovr_logic" src="https://github.com/user-attachments/assets/b502c80a-510a-49ad-ba80-4ec710a122cb" />
 
@@ -58,12 +71,12 @@ I owned the robot's software stack — from Pi firmware up to the Unity VR clien
 - **WebRTC communications module.** Wrote the client that connects to the signaling server, negotiates the peer connection, registers the data channel + video track, parses incoming JSON command frames (drive / camera / arm), and bridges them into ROS 2 topics.
 - **Low-latency video pipeline.** Configured v4l2 capture with low-delay flags and wrote a wrapper track that drops stale queued frames before sending — meaningfully cuts motion-to-photon latency in the headset.
 - **Chassis control.** PWM + direction signals to the MD10C motor driver, steering servo via Pi GPIO. Added soft-start/soft-stop slew limiting and a direction-coast safety so reverse voltage is never applied to a spinning DC motor.
-- **Servo bus driver.** Implemented control of the STS3215 serial bus (8 servos: 6 arm servos + 2 pan/tilt), including position calibration, soft limits, and a homing routine that returns the arm to a safe pose when commands stop arriving.
+- **Servo bus driver.** Implemented control of the ST3215 serial bus (8 servos: 5 arm joints + gripper + 2 pan/tilt servos for camera), including position calibration, soft limits, and a homing routine that returns the arm to a safe pose when commands stop arriving.
 - **Robot-arm bring-up.** Configured the bus driver boards, assigned servo IDs, set per-joint mechanical limits.
 
 ### VR client — Unity · C#
 
-- **Damped-Jacobian IK solver.** Custom IK for the 6-axis arm in Unity. Supports per-joint soft limits and speed limits, adaptive step scaling on no-improvement steps, error-reduction safety checks, and a settle-handshake so the next command isn't sent until the previous one converges within tolerance.
+- **Damped-Jacobian IK solver.** Custom IK for the 5 DoF arm in Unity. Supports per-joint soft limits and speed limits, adaptive step scaling on no-improvement steps, error-reduction safety checks, and a settle-handshake so the next command isn't sent until the previous one converges within tolerance.
 
 <img width="625" height="370" alt="arm" src="https://github.com/user-attachments/assets/17184dd0-3b2a-4799-ade9-b8ad4502bf5b" />
 
@@ -101,8 +114,8 @@ python3 scripts/recalibrate_joint.py --joint {n}   # single-joint recalibration
 
 ## Next steps
 
-- **Stability of the chassis node.** Under continuous driving the drive node currently crashes after ~5–10 minutes (everything else — arm, camera, video — keeps running). Most likely a GPIO/PWM resource leak; on the to-do list.
-- **URDF + MoveIt.** A proper URDF model would unlock MoveIt for collision-aware planning and let me retire the bespoke IK in favor of something supported.
-- **Operator HUD.** Battery, round-trip latency, and per-joint load indicators would make remote operation a lot safer than it is today.
+- **Chassis node stability.** Under continuous driving, the chassis node can crash after approximately 5–10 minutes, while the arm, camera, and video pipeline remain operational. The likely cause is a GPIO/PWM resource leak
+- **URDF + MoveIt integration.** A proper URDF model would enable collision-aware planning with MoveIt and replace the current custom IK solver with a more standard robotics stack
+- **Operator HUD.** Battery level, round-trip latency, and per-joint load indicators would make remote operation safer and easier
 
 ---
